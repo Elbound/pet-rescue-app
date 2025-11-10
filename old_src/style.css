@@ -50,4 +50,14 @@ body{
     margin: 0 auto;
 }
 
+.cart {
+  border-left: 1px solid var(--border);
+  line-height: 1.5;
+  text-align: center;
+  padding: 15px;
+}
+
+.cart p {
+  margin: 15px 0;
+}
 
