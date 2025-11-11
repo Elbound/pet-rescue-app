@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client"
+
 import Pizza from "./Pizza"
 // import order from "./routes/order.lazy"
 import PizzaOfTheDay from "./PizzaOfTheDay"
@@ -13,6 +14,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const router = createRouter({ routeTree })
 
+//kyk useContext
+//bikin instance queryClient supaya bisa pake dalam provider
 const queryClient = new QueryClient()
 
 const App = () => {

@@ -3,3 +3,5 @@ export default async function getPastOrders(page) {
   const data = await response.json();
   return data;
 }
+
+
