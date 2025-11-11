@@ -6,8 +6,10 @@ import getPastOrders from "../api/getPastOrders";
 import getPastOrder from '../api/getPastOrder'
 import Modal from '../Modal'
 
+import ErrorBoundary from "../ErrorBoundary";
+
 export const Route = createLazyFileRoute("/past")({
-  component: PastOrdersRoute,
+  component: ErrorBoundaryWrappedPastOrderRoutes,
 });
 
 const intl = new Intl.NumberFormat("en-US", {
@@ -16,8 +18,17 @@ const intl = new Intl.NumberFormat("en-US", {
 });
 
 
+function ErrorBoundaryWrappedPastOrderRoutes() {
+  
+  return (
+    <ErrorBoundary>
+      <PastOrdersRoute />
+    </ErrorBoundary>
+  );
+}
 
 function PastOrdersRoute() {
+  
   const [focusedOrder, setFocusedOrder] = useState();
 
   const { isLoading: isLoadingPastOrder, data: pastOrderData } = useQuery({
