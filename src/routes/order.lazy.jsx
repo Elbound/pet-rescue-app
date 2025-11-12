@@ -14,6 +14,7 @@ const kurs = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 })
+
 function Order() {
   const [cart, setCart] = useContext(CartContext)
 
@@ -23,7 +24,19 @@ function Order() {
   const [loading, setLoading] = useState(true)
   //   const [cart, setCart] = useState([])
 
-  let price, selectedPizza
+  function addToCart() {
+    setCart([...cart, { pizza: selectedPizza, size: pizzaSize, price }]);
+  }
+  // function addToCart(formData) {
+  //   "use server";
+  //   sql(`INSERT INTO cart (user_id, pizza_type, size) VALUES ($1, $2)`, [
+  //     formData.pizza_type,
+  //     formData.size,
+  //   ]);
+  // }
+
+
+  let price, selectedPizza;
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id)
     price = kurs.format(
@@ -67,13 +80,14 @@ function Order() {
     <div className="order">
       <h2>Create ORder</h2>
       <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          setCart([
-            ...cart,
-            { pizza: selectedPizza, size: pizzaSize, price: price },
-          ])
-        }}
+        action={addToCart}
+        // onSubmit={(e) => {
+        //   e.preventDefault()
+        //   setCart([
+        //     ...cart,
+        //     { pizza: selectedPizza, size: pizzaSize, price: price },
+        //   ])
+        // }}
       >
         <div>
           <div>

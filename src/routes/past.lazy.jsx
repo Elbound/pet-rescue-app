@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, use, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import getPastOrders from "../api/getPastOrders";
@@ -17,18 +17,35 @@ const intl = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-
 function ErrorBoundaryWrappedPastOrderRoutes() {
-  
+  const [page, setPage] = useState(1);
+  const loadedPromise = useQuery({
+    queryKey: ["past-orders", page],
+    queryFn: () => getPastOrders(page),
+    staleTime: 30000,
+  }).promise;
   return (
     <ErrorBoundary>
-      <PastOrdersRoute />
+      <Suspense
+        fallback={
+          <div className="past-orders">
+            <h2>Loading Past Orders …</h2>
+          </div>
+        }
+      >
+        <PastOrdersRoute
+          loadedPromise={loadedPromise}
+          page={page}
+          setPage={setPage}
+        />
+      </Suspense>
     </ErrorBoundary>
   );
 }
 
-function PastOrdersRoute() {
-  
+function PastOrdersRoute({loadedPromise, page, setPage}) {
+  const data = use(loadedPromise);
+
   const [focusedOrder, setFocusedOrder] = useState();
 
   const { isLoading: isLoadingPastOrder, data: pastOrderData } = useQuery({
@@ -39,24 +56,28 @@ function PastOrdersRoute() {
   });
 
   //use state untuk pagination
-  const [page, setPage] = useState(1);
-  //useQuery buat manggil fungsi getPAstOrders
-  //useQuery menerima object, attribuut wajibya itu qury key dan queryFn(function)
-  // qury key menerima 2 element, pertama adalah label qurry (nama si query yang kita eksekusi)
-  // kedua adalah payload. dalam hali ini adalah page.
-  //nanti kita bakal buat pagination, maka kita perlu atur page mana yang mau kita akses. defaultnya adlah "page 1" ssuai useState page di atas
-  const { isLoading, data } = useQuery({
-    queryKey: ["past-orders", page],
-    queryFn: () => getPastOrders(page),
-    staleTime: 30000,
-  });
-  if (isLoading) {
-    return (
-      <div className="past-orders">
-        <h2>LOADING …</h2>
-      </div>
-    );
-  }
+
+  // const [page, setPage] = useState(1);
+
+  // const { isLoading, data } = useQuery({
+  //   queryKey: ["past-orders", page],
+  //   queryFn: () => getPastOrders(page),
+  //   staleTime: 30000,
+  // });
+    
+    //useQuery buat manggil fungsi getPAstOrders
+    //useQuery menerima object, attribuut wajibya itu qury key dan queryFn(function)
+    // qury key menerima 2 element, pertama adalah label qurry (nama si query yang kita eksekusi)
+    // kedua adalah payload. dalam hali ini adalah page.
+    //nanti kita bakal buat pagination, maka kita perlu atur page mana yang mau kita akses. defaultnya adlah "page 1" ssuai useState page di atas
+    
+  // if (isLoading) {
+  //   return (
+  //     <div className="past-orders">
+  //       <h2>LOADING …</h2>
+  //     </div>
+  //   );
+  // }
 
   //ini default returnnya. jadi kalo is loading udh gk true, default return yang dikembaliin
   return (

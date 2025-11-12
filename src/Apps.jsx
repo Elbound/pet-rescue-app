@@ -16,7 +16,14 @@ const router = createRouter({ routeTree })
 
 //kyk useContext
 //bikin instance queryClient supaya bisa pake dalam provider
-const queryClient = new QueryClient()
+// const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      experimental_prefetchInRender: true,
+    },
+  },
+});
 
 const App = () => {
   return (
